@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools {
+        terraform 'terraform60'
+        ansible 'ansible60'
+    }
 
     environment {
         TF_IN_AUTOMATION = "true"
