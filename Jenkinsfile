@@ -30,29 +30,30 @@ pipeline {
                     withCredentials([file(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
                         sh """
                             export YC_SERVICE_ACCOUNT_KEY_FILE="\$YC_SA_TOKEN"
-                            terraform plan -input=false -out=tfplan -var-file=variables.tf
+                            # ИСПРАВЛЕНИЕ: нельзя передавать variables.tf как var-file, нужен .tfvars
+                            terraform plan -input=false -out=tfplan -var-file=terraform.tfvars
                         """
                     }
                 }
             }
-        
+        } 
 
-        stage('Terraform provision hosts' ) {
+        stage('Terraform: Apply') {
             steps {
                 dir(env.TF_DIR) {
                     withCredentials([file(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
                         sh """
                             export YC_SERVICE_ACCOUNT_KEY_FILE="\$YC_SA_TOKEN"
-                            terraform apply tfplan
+                            terraform apply -auto-approve tfplan
                         """
                     }
                 }
             }
         }
 
-        stage('Ansible. Provision environments, building and deploying app') {
+        stage('Ansible: Deploy') {
             steps {
-               
+                          
                 sshagent(credentials: ['superuser']) {
                     sh """
                         ansible-playbook ${ANSIBLE_PLAYBOOK} \\
@@ -63,5 +64,5 @@ pipeline {
                 }
             }
         }
-
-}
+    }
+} 
