@@ -27,10 +27,9 @@ pipeline {
         stage('Terraform: Plan') {
             steps {
                 dir(env.TF_DIR) {
-                    // ИСПРАВЛЕНО: string вместо file
                     withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_TOKEN')]) {
                         sh '''
-                            terraform plan -input=false -out=tfplan \
+                           terraform plan -input=false -out=tfplan \
                               -var-file=terraform.tfvars \
                               -var="yc_token=$YC_TOKEN"
                         '''
@@ -42,18 +41,16 @@ pipeline {
         stage('Terraform: Apply') {
             steps {
                 dir(env.TF_DIR) {
-                    // ИСПРАВЛЕНО: string вместо file
                     withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_TOKEN')]) {
                         sh '''
-                            terraform apply -auto-approve tfplan \
-                              -var="yc_token=$YC_TOKEN"
+                           terraform apply -auto-approve tfplan
                         '''
                     }
                 }
             }
         }
 
-        stage('Ansible: Deploy') {
+        stage('Ansible: Config infra & Deploy') {
             steps {
                 sh 'sleep 15'
                 
