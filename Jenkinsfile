@@ -34,8 +34,7 @@ pipeline {
                     withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
                         sh """
                             export YC_SERVICE_ACCOUNT_KEY_FILE="\$YC_SA_TOKEN"
-                            # ИСПРАВЛЕНИЕ: нельзя передавать variables.tf как var-file, нужен .tfvars
-                            terraform plan -input=false -out=tfplan -var-file=terraform.tfvars
+                            terraform plan -input=false -out=tfplan -var-file=variables.tf
                         """
                     }
                 }
