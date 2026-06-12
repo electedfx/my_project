@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_IN_AUTOMATION = "true"
+        TF_WORKSPACE     = "default"
+        TF_DIR           = "terraform"
+        ANSIBLE_PLAYBOOK = "ansible/playbook.yml"
+        INVENTORY_FILE   = "ansible/inventory/hosts.yml"
+    }
+
+    stages {
+                stage('Ansible: Config infra & Deploy') {
+            steps {
+                sh 'sleep 15'
+                              
+                withCredentials([sshUserPrivateKey(credentialsId: 'superuser', keyFileVariable: 'SSH_KEY_FILE')]) {
+                    sh '''
+                        ansible-playbook ${ANSIBLE_PLAYBOOK} \
+                          -i ${INVENTORY_FILE} \
+                          -u superuser \
+                          --private-key $SSH_KEY_FILE \
+                          -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"'
+                    '''
+                }
+            }
+        }
+    }
+}
