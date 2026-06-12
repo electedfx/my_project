@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    tools {
-        terraform 'terraform60'
-        ansible 'ansible60'
-    }
 
     environment {
         TF_IN_AUTOMATION = "true"
@@ -31,24 +27,27 @@ pipeline {
         stage('Terraform: Plan') {
             steps {
                 dir(env.TF_DIR) {
-                    withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
-                        sh """
-                            export YC_SERVICE_ACCOUNT_KEY_FILE="\$YC_SA_TOKEN"
-                            terraform plan -input=false -out=tfplan -var-file=terraform.tfvars
-                        """
+                    // ИСПРАВЛЕНО: string вместо file
+                    withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_TOKEN')]) {
+                        sh '''
+                            terraform plan -input=false -out=tfplan \
+                              -var-file=terraform.tfvars \
+                              -var="yc_token=$YC_TOKEN"
+                        '''
                     }
                 }
             }
-        } 
+        }
 
         stage('Terraform: Apply') {
             steps {
                 dir(env.TF_DIR) {
-                    withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
-                        sh """
-                            export YC_SERVICE_ACCOUNT_KEY_FILE="\$YC_SA_TOKEN"
-                            terraform apply -auto-approve tfplan
-                        """
+                    // ИСПРАВЛЕНО: string вместо file
+                    withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_TOKEN')]) {
+                        sh '''
+                            terraform apply -auto-approve tfplan \
+                              -var="yc_token=$YC_TOKEN"
+                        '''
                     }
                 }
             }
@@ -56,16 +55,17 @@ pipeline {
 
         stage('Ansible: Deploy') {
             steps {
-                          
+                sh 'sleep 15'
+                
                 sshagent(credentials: ['superuser']) {
-                    sh """
-                        ansible-playbook ${ANSIBLE_PLAYBOOK} \\
-                          -i ${INVENTORY_FILE} \\
-                          -u superuser \\
+                    sh '''
+                        ansible-playbook ${ANSIBLE_PLAYBOOK} \
+                          -i ${INVENTORY_FILE} \
+                          -u superuser \
                           -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"'
-                    """
+                    '''
                 }
             }
         }
     }
-} 
+}
