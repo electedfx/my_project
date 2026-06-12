@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage('Terraform: Init & Format Check') {
+        stage('Terraform: Init') {
             steps {
                 dir(env.TF_DIR) {
                     sh 'terraform init -input=false'
@@ -37,7 +37,7 @@ pipeline {
             }
         }
 
-        stage('Terraform: Apply') {
+        stage('Terraform provision hosts ) {
             steps {
                 dir(env.TF_DIR) {
                     withCredentials([file(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
@@ -50,7 +50,7 @@ pipeline {
             }
         }
 
-        stage('Ansible: Deploy') {
+        stage('Ansible. Provision environments, building and deploying app') {
             steps {
                
                 sshagent(credentials: ['superuser']) {
