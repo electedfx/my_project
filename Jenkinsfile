@@ -29,7 +29,7 @@ pipeline {
                 dir(env.TF_DIR) {
                     withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_TOKEN')]) {
                         sh '''
-                           terraform plan -input=false -out=tfplan \
+                            terraform plan -input=false -out=tfplan \
                               -var-file=terraform.tfvars \
                               -var="yc_token=$YC_TOKEN"
                         '''
@@ -43,7 +43,7 @@ pipeline {
                 dir(env.TF_DIR) {
                     withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_TOKEN')]) {
                         sh '''
-                           terraform apply -auto-approve tfplan
+                            terraform apply -auto-approve tfplan
                         '''
                     }
                 }
@@ -54,11 +54,13 @@ pipeline {
             steps {
                 sh 'sleep 15'
                 
-                sshagent(credentials: ['superuser']) {
+              
+                withCredentials([sshUserPrivateKey(credentialsId: 'superuser', keyFileVariable: 'SSH_KEY_FILE')]) {
                     sh '''
                         ansible-playbook ${ANSIBLE_PLAYBOOK} \
                           -i ${INVENTORY_FILE} \
                           -u superuser \
+                          --private-key $SSH_KEY_FILE \
                           -e 'ansible_ssh_common_args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"'
                     '''
                 }
