@@ -31,7 +31,7 @@ pipeline {
         stage('Terraform: Plan') {
             steps {
                 dir(env.TF_DIR) {
-                    withCredentials([file(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
+                    withCredentials([string(credentialsId: 'yc-sa-token', variable: 'YC_SA_TOKEN')]) {
                         sh """
                             export YC_SERVICE_ACCOUNT_KEY_FILE="\$YC_SA_TOKEN"
                             # ИСПРАВЛЕНИЕ: нельзя передавать variables.tf как var-file, нужен .tfvars
