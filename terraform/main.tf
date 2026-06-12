@@ -6,7 +6,8 @@ terraform {
 }
 
 provider "yandex" {
-  token     = ""
+  service_account_key_file = "${path.module}/sa-key.json"
+ # token     = ""
   folder_id = "b1gc3bh5hoi0vva6ch7n"
   zone      = var.yc_zone
 }
