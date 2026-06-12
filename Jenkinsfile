@@ -35,7 +35,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
 
         stage('Terraform provision hosts' ) {
             steps {
