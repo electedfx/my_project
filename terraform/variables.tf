@@ -106,3 +106,8 @@ variable "yc_vm_cloud_init_config" {
   default = "./vm_cloud_init.yaml"
 }
 
+variable "yc_token" {
+  description = "IAM-token Yandex Cloud"
+  type        = string
+  sensitive   = true
+}
