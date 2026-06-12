@@ -52,10 +52,7 @@ pipeline {
 
         stage('Ansible: Deploy') {
             steps {
-                // Небольшая пауза, чтобы cloud-init на ВМ успел обработать ключи и поднять SSH-демон
-                sh 'sleep 15'
-                
-                // sshagent внедряет ключ в память и задает SSH_AUTH_SOCK
+               
                 sshagent(credentials: ['superuser']) {
                     sh """
                         ansible-playbook ${ANSIBLE_PLAYBOOK} \\
