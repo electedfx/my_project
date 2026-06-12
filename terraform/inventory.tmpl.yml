@@ -1,0 +1,17 @@
+# inventory.tmpl.yml
+all:
+  children:
+    builders:
+      hosts:
+        builder:
+          ansible_host: ${builder_ip}
+          ansible_user: superuser
+          ansible_ssh_private_key_file: ./keys/study4
+          ansible_python_interpreter: /usr/bin/python3
+    appsrv:
+      hosts:
+        appsrv:
+          ansible_host: ${runner_ip}
+          ansible_user: superuser
+          ansible_ssh_private_key_file: ./keys/study4
+          ansible_python_interpreter: /usr/bin/python3

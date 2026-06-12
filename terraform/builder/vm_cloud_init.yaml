@@ -1,0 +1,15 @@
+---------------------------metadata
+#cloud-config
+datasource:
+ Ec2:
+  strict_id: false
+ssh_pwauth: no
+users:
+- name: superuser
+  sudo: ALL=(ALL) NOPASSWD:ALL
+  shell: /bin/bash
+  ssh_authorized_keys:
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII7iNEkaW8NfUEQve85jf4IVW9fBjoXxk+IrlxkF+ctz superuser@fedora
+
+---------------------------------platform
+standard-v4a

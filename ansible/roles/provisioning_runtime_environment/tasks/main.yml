@@ -1,0 +1,16 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for provisioning_build_environment
+- name: Update apt cache
+  apt: 
+    update_cache: yes
+
+- name: Install CRE packages
+  apt:
+    name: 
+      - docker.io
+      - git
+      - wget
+
+    state: present
+  notify: Start docker daemon

@@ -1,0 +1,28 @@
+---
+- name: Provisioning build environment & building app
+  hosts: builder
+  become: true
+  pre_tasks:
+    - name: Wait for host to become reachable
+      ansible.builtin.wait_for_connection:
+         timeout: 5
+         delay: 5
+         sleep: 2
+  roles:
+    - provisioning_build_environment  
+    - registry_login
+    - building_artifacts
+
+- name: Provisioning runtime environment & deploying app
+  hosts: appsrv
+  become: true
+  pre_tasks:
+    - name: Wait for host to become reachable
+      ansible.builtin.wait_for_connection:
+         timeout: 5
+         delay: 5
+         sleep: 2
+  roles:
+    - provisioning_runtime_environment
+    - registry_login
+    - deploy_app

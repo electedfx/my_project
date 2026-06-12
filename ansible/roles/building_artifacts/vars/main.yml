@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for provisioning_building_env
+build_image: 'alpine:latest'
+run_image:  'alpine:latest'
+app_repo: https://github.com/99North/Sample-Web-App.git
+source_folder: ./

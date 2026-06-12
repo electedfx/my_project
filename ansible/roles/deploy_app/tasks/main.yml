@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for deploy_app
+- name: Pulling image
+  community.docker.docker_image_pull:
+    name: electedfx/java_app:latest
+
+- name: Create a data container
+  community.docker.docker_container:
+    name: my_containerized_java_app
+    image: electedfx/alpine-tomcat9-app:latest
+    published_ports: 8080:8080

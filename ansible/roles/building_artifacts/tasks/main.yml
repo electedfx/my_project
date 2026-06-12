@@ -1,0 +1,18 @@
+#SPDX-License-Identifier: MIT-0
+---
+- name: Preparing destination path
+  ansible.builtin.file:
+    path: /usr/src/docker/
+    state: directory
+- name: Delivering source files
+  ansible.builtin.template:
+    src: Dockerfile.j2
+    dest: /usr/src/docker/Dockerfile
+- name: Building artifact
+  community.docker.docker_image:
+    build:
+       path: /usr/src/docker
+    name: electedfx/alpine-tomcat9-app
+    tag: latest
+    push: true
+    source: build

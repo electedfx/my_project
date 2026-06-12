@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# handlers file for provisioning_build_environment
+- name: Start docker daemon
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
